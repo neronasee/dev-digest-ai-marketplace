@@ -1,0 +1,27 @@
+{
+  "name": "dev-digest-ai-marketplace-catalog",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Catalog UI for the dev-digest-ai-marketplace plugin marketplace — static, real data only, built from plugins/ at build time.",
+  "scripts": {
+    "predev": "node scripts/generate-index.mjs",
+    "dev": "vite",
+    "prebuild": "node scripts/generate-index.mjs",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "index": "node scripts/generate-index.mjs"
+  },
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-router-dom": "^7.9.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^5.1.0",
+    "typescript": "^5.9.0",
+    "vite": "^7.3.0"
+  }
+}
