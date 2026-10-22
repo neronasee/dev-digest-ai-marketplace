@@ -1,0 +1,5 @@
+schema_version: "1.0"
+context:
+  # Copies the plugin's live docs into the case workspace so the eval detects
+  # documentation drift. Requires the --scaffold flag (author-supplied bash).
+  scaffold_script: ./scaffold.sh
