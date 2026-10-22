@@ -1,0 +1,15 @@
+# Node
+node_modules/
+dist/
+*.local
+
+# Generated catalog index (built from plugins/ at build time — never commit)
+site/src/data/catalog.json
+
+# Eval run artifacts (evidence snapshots are committed under docs/ instead)
+evals/.runs/
+**/evals/results/
+
+# OS / editor
+.DS_Store
+*.swp
