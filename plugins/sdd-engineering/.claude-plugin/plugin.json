@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin.json",
+  "name": "sdd-engineering",
+  "version": "1.0.0",
+  "description": "Spec-driven development pipeline: spec-creator writes an EARS-structured feature spec, implementation-planner turns it into a Development Plan, the implement-plan skill drives implementer -> plan-verifier -> architecture-reviewer, and workflow-retro captures the retrospective.",
+  "author": {
+    "name": "neronasee",
+    "url": "https://github.com/neronasee"
+  },
+  "homepage": "https://neronasee.github.io/dev-digest-ai-marketplace/",
+  "repository": "https://github.com/neronasee/dev-digest-ai-marketplace",
+  "license": "MIT",
+  "keywords": ["sdd", "spec", "plan", "implement", "verify", "retro"],
+  "dependencies": ["research-tools", "architecture-review", "engineering-paved-path"]
+}

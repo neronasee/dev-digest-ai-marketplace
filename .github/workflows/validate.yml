@@ -1,0 +1,57 @@
+name: validate-marketplace
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  validate-marketplace:
+    name: validate-marketplace
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Claude Code CLI (pinned)
+        run: npm install -g @anthropic-ai/claude-code@2.1.278
+
+      - name: Validate marketplace manifest
+        run: claude plugin validate .
+
+      - name: Validate every plugin
+        run: |
+          status=0
+          for p in plugins/*/; do
+            echo "::group::validate ${p}"
+            if ! claude plugin validate "$p"; then status=1; fi
+            echo "::endgroup::"
+          done
+          exit $status
+
+      - name: Marketplace entry consistency (name <-> directory)
+        run: |
+          node -e '
+            const fs = require("fs");
+            const mp = JSON.parse(fs.readFileSync(".claude-plugin/marketplace.json", "utf8"));
+            let bad = 0;
+            for (const e of mp.plugins) {
+              const dir = "plugins/" + e.name;
+              if (!fs.existsSync(dir + "/.claude-plugin/plugin.json")) { console.error("missing manifest: " + dir); bad = 1; continue; }
+              const pj = JSON.parse(fs.readFileSync(dir + "/.claude-plugin/plugin.json", "utf8"));
+              if (pj.name !== e.name) { console.error("name mismatch: entry " + e.name + " vs manifest " + pj.name); bad = 1; }
+              if (pj.version !== e.version) { console.error("version mismatch (lockstep rule): entry " + e.name + "@" + e.version + " vs manifest " + pj.version); bad = 1; }
+            }
+            process.exit(bad);
+          '
+
+      - name: Generalization sweep (no host-repo identifiers)
+        run: |
+          # dev-digest($|[^-]) excludes the marketplace's own name (dev-digest-ai-marketplace),
+          # which legitimately appears in install commands and manifest URLs.
+          hits=$(grep -rniE 'devdigest|dev-digest($|[^-])|dev digest|reviewer-core|pr-self-review|mcp__devdigest|scripts/dev\.sh|@devdigest' plugins/ --include='*.md' --include='*.json' || true)
+          if [ -n "$hits" ]; then echo "Host-repo identifiers found in plugin content:"; echo "$hits"; exit 1; fi

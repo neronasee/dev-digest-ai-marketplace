@@ -1,0 +1,7 @@
+# Default owner for everything in the repository
+* @neronasee
+
+# Marketplace manifest and release tooling require maintainer review
+/.claude-plugin/ @neronasee
+/scripts/ @neronasee
+/.github/workflows/ @neronasee

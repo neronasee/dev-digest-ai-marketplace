@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin.json",
+  "name": "architecture-review",
+  "version": "1.0.0",
+  "description": "Read-only architecture review agents: full and lite variants checking the structural boundaries a repository declares (layering, placement, import rules) with evidence-backed findings and REJECT/REVISE/ACCEPT verdicts.",
+  "author": {
+    "name": "neronasee",
+    "url": "https://github.com/neronasee"
+  },
+  "homepage": "https://neronasee.github.io/dev-digest-ai-marketplace/",
+  "repository": "https://github.com/neronasee/dev-digest-ai-marketplace",
+  "license": "MIT",
+  "keywords": ["architecture", "review", "boundaries", "layering"],
+  "dependencies": ["engineering-paved-path"]
+}

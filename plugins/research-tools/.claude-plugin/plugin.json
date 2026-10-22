@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin.json",
+  "name": "research-tools",
+  "version": "1.0.0",
+  "description": "Read-only researcher agent for evidence-backed fact-finding: investigates the repository or the external web and returns conclusions with evidence, references, and not-found lists.",
+  "author": {
+    "name": "neronasee",
+    "url": "https://github.com/neronasee"
+  },
+  "homepage": "https://neronasee.github.io/dev-digest-ai-marketplace/",
+  "repository": "https://github.com/neronasee/dev-digest-ai-marketplace",
+  "license": "MIT",
+  "keywords": ["research", "evidence", "fact-finding"]
+}
