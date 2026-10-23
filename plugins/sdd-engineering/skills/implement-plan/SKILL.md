@@ -1,6 +1,6 @@
 ---
 name: implement-plan
-description: Runs the post-approval execution pipeline for an existing approved Development Plan — implementer (single-agent, or module-batched concurrent implementers when the plan's Execution mode says multi) → plan-verifier (gate) → architecture-reviewer with a bounded fix loop that stops early when a round resolves nothing. Optional args — mode:single|multi (override the plan's Execution mode), max-fix:<n> (fix-loop cap, default 2), --auto (skip the post-implementation checkpoint), free-text constraints. Use when the user already has an approved docs/plans/YYYY-MM-DD-<slug>.md and wants the whole implement → verify → review-with-fixes sequence driven in one command, instead of invoking each agent by hand and manually re-running reviewers after every fix round. Never pushes, merges, or opens a PR — ends at a review-clean working tree pointing at the repo's pre-PR review gate, if one exists. NOT for turning an idea into a spec (spec-creator) or a spec/request into a plan (implementation-planner) — those run separately, by hand, before this skill; NOT for writing tests (a separate manual step, for token cost — repo-local test agents, if you have them); NOT a replacement for the repo's pre-PR review gate, if one exists — run that separately, right before push.
+description: Runs the post-approval execution pipeline for an existing approved Development Plan — implementer (single-agent, or module-batched concurrent implementers when the plan's Execution mode says multi) → plan-verifier (gate) → architecture-reviewer with a bounded fix loop that stops early when a round resolves nothing. Optional args — mode:single|multi (override the plan's Execution mode), max-fix:<n> (fix-loop cap, default 2), --auto (skip the post-implementation checkpoint), free-text constraints. Since v1.1.0 the wrap-up also writes a structured run summary (fixed headings + machine-readable JSON block) to docs/retro/runs/YYYY-MM-DD-<slug>.md. Use when the user already has an approved docs/plans/YYYY-MM-DD-<slug>.md and wants the whole implement → verify → review-with-fixes sequence driven in one command, instead of invoking each agent by hand and manually re-running reviewers after every fix round. Never pushes, merges, or opens a PR — ends at a review-clean working tree pointing at the repo's pre-PR review gate, if one exists. NOT for turning an idea into a spec (spec-creator) or a spec/request into a plan (implementation-planner) — those run separately, by hand, before this skill; NOT for writing tests (a separate manual step, for token cost — repo-local test agents, if you have them); NOT a replacement for the repo's pre-PR review gate, if one exists — run that separately, right before push.
 ---
 
 # Implement Plan
@@ -197,6 +197,37 @@ Report, not a checkpoint — in this shape:
 
 Fill every field from the agents' actual reports — never fabricate or round a
 verdict. Nothing was pushed, merged, or PR'd by this run; say so.
+
+### Run summary file (required since v1.1.0)
+
+Immediately after the chat report, Phase 4 also writes a durable run summary to
+`docs/retro/runs/YYYY-MM-DD-<slug>.md` (today's date; slug taken from the plan
+file name) so tooling can consume the run without parsing chat. Exactly this
+shape — fixed headings, then one machine-readable fenced `json` block:
+
+````
+# Run summary — <feature>
+
+- **Plan:** `docs/plans/<file>.md`
+- **Mode:** single-agent | module-batched multi-agent
+
+## Gate results
+
+- **plan-verifier:** PASS | INCOMPLETE
+- **architecture-reviewer:** ACCEPT | ACCEPT-WITH-RESERVATIONS | REJECT
+
+## Fix loop
+
+- iterations: <i>/<max> — remaining (needs human): <list, or "none">
+
+```json
+{"plugin": "sdd-engineering", "version": "1.1.0", "plan": "<plan file>", "mode": "<mode>", "phases": [{"agent": "implementer", "verdict": "<done|partial|blocked>"}, {"agent": "plan-verifier", "verdict": "<PASS|INCOMPLETE>"}, {"agent": "architecture-reviewer", "verdict": "<ACCEPT|ACCEPT-WITH-RESERVATIONS|REJECT>"}], "fixIterations": <i>, "remaining": [<strings>]}
+```
+````
+
+The JSON block repeats the report's verdicts verbatim — same rule: never
+fabricate. If a later phase never ran (e.g. the gate failed), omit its entry
+from `phases` and say why in the chat report.
 
 ## What this skill must not do
 

@@ -1,0 +1,5 @@
+schema_version: "1.0"
+context:
+  # Copies the plugin's live skill doc and the run fixtures into the case
+  # workspace. Requires the --scaffold flag (author-supplied bash).
+  scaffold_script: ./scaffold.sh
