@@ -46,7 +46,7 @@ Dependencies — `research-tools`, `architecture-review`, `engineering-paved-pat
 
 | Skill | Invocation | Role |
 |---|---|---|
-| `implement-plan` | `/sdd-engineering:implement-plan <plan-path> [mode:single\|multi] [max-fix:<n>] [--auto]` | One command over the post-approval pipeline: implementer → plan-verifier (gate) → architecture-reviewer with a bounded fix loop. Never pushes or opens PRs. |
+| `implement-plan` | `/sdd-engineering:implement-plan <plan-path> [mode:single\|multi] [max-fix:<n>] [--auto]` | One command over the post-approval pipeline: implementer → plan-verifier (gate) → architecture-reviewer with a bounded fix loop. Since v1.1.0 the wrap-up also writes a structured run summary (fixed headings + machine-readable JSON block) to `docs/retro/runs/YYYY-MM-DD-<slug>.md`. Never pushes or opens PRs. |
 | `workflow-retro` | `/sdd-engineering:workflow-retro` | Retrospective over an agent-orchestrated session: token totals, dispatch order, per-phase breakdown, recommendations — written to `docs/retro/ledger/`. |
 
 ## Conventions this plugin introduces

@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "claudeVersion": "2.1.278",
+  "startedAt": "2026-10-23T08:13:29.738Z",
+  "durationSeconds": 83,
+  "costUsd": 0.13941,
+  "partial": false,
+  "suite": {
+    "root": "/home/oleksandrvorona/playground/neoversity/dev-digest-ai-marketplace/plugins/sdd-engineering",
+    "ablation": "none",
+    "caseFilter": "summary*",
+    "threshold": 1,
+    "concurrency": 1,
+    "plugins": [
+      {
+        "name": "sdd-engineering",
+        "version": "1.1.0",
+        "path": "/home/oleksandrvorona/playground/neoversity/dev-digest-ai-marketplace/plugins/sdd-engineering"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "summary-emission",
+      "dir": "evals/summary-emission",
+      "source": "mixed",
+      "promptMarkdown": "The `implement-plan` skill (v1.1.0+) requires its Phase 4 wrap-up to write a\nstructured run summary file. Read `implement-plan-SKILL.md` (the live skill\ndocumentation, copied into this directory) — see the \"Run summary file\" section.\n\nA pipeline run has just finished. Its inputs and outcomes are in `plan.md` (the\nDevelopment Plan that was executed) and `run-transcript.md` (what each agent\nreported). Produce **exactly the run summary file this skill defines** for that\nrun, written to `docs/retro/runs/2026-10-23-fixture-run.md` (create the\ndirectories). Take every verdict from the transcript — never invent one.",
+      "runsPerCase": 1,
+      "timeoutSeconds": 300,
+      "maxTurns": 8,
+      "graders": [
+        {
+          "name": "summary-file",
+          "type": "file_exists",
+          "weight": 1,
+          "config": {
+            "path": "docs/retro/runs/2026-10-23-fixture-run.md",
+            "exists": true
+          }
+        },
+        {
+          "name": "summary-json",
+          "type": "regex",
+          "weight": 1,
+          "config": {
+            "target": {
+              "source": "file",
+              "path": "docs/retro/runs/2026-10-23-fixture-run.md"
+            },
+            "pattern": "```json\\s*\\{[^`]*?\"plan\"[^`]*?\"phases\"[^`]*?\\}\\s*```",
+            "flags": "",
+            "match": "contains"
+          }
+        }
+      ],
+      "arms": {
+        "with": [
+          {
+            "score": 1,
+            "passed": true,
+            "turns": 5,
+            "costUsd": 0.13941,
+            "judgeCostUsd": 0,
+            "durationSeconds": 83,
+            "startedAt": "2026-10-23T08:13:29.746Z",
+            "error": null,
+            "tracePath": "/tmp/claude-eval-tdqiVH/out/trace.jsonl",
+            "skippedPaidGraders": false,
+            "graders": [
+              {
+                "name": "summary-file",
+                "passed": true,
+                "weight": 1,
+                "explanation": "docs/retro/runs/2026-10-23-fixture-run.md exists as expected",
+                "withOnly": false,
+                "scored": true
+              },
+              {
+                "name": "summary-json",
+                "passed": true,
+                "weight": 1,
+                "explanation": "matched ```json\\s*\\{[^`]*?\"plan\"[^`]*?\"phases\"[^`]*?\\}\\s*```",
+                "withOnly": false,
+                "scored": true
+              }
+            ]
+          }
+        ]
+      },
+      "aggregates": {
+        "score": 1,
+        "passRate": 1
+      }
+    }
+  ],
+  "aggregates": {
+    "casesTotal": 1,
+    "casesPassed": 1,
+    "overallScore": 1,
+    "overallPassRate": 1
+  }
+}

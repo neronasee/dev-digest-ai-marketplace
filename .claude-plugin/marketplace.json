@@ -15,31 +15,66 @@
       "name": "sdd-engineering",
       "source": "./plugins/sdd-engineering",
       "description": "Spec-driven development pipeline: spec-creator turns an idea into an EARS-structured spec, implementation-planner plans it, implement-plan drives implement -> verify -> review, workflow-retro closes the loop.",
-      "version": "1.0.0",
-      "dependencies": ["research-tools", "architecture-review", "engineering-paved-path"],
-      "keywords": ["sdd", "spec", "plan", "implement", "verify", "retrospective"]
+      "version": "1.1.0",
+      "dependencies": [
+        "research-tools",
+        "architecture-review",
+        "engineering-paved-path"
+      ],
+      "keywords": [
+        "sdd",
+        "spec",
+        "plan",
+        "implement",
+        "verify",
+        "retrospective"
+      ]
     },
     {
       "name": "research-tools",
       "source": "./plugins/research-tools",
       "description": "Read-only researcher agent for evidence-backed fact-finding across the repository, docs, and the web.",
       "version": "1.0.0",
-      "keywords": ["research", "evidence", "fact-finding"]
+      "keywords": [
+        "research",
+        "evidence",
+        "fact-finding"
+      ]
     },
     {
       "name": "architecture-review",
       "source": "./plugins/architecture-review",
       "description": "Read-only architecture review agents checking the structural boundaries a repository declares, with evidence-backed findings and REJECT/REVISE/ACCEPT verdicts.",
       "version": "1.0.0",
-      "dependencies": ["engineering-paved-path"],
-      "keywords": ["architecture", "review", "boundaries", "layering"]
+      "dependencies": [
+        "engineering-paved-path"
+      ],
+      "keywords": [
+        "architecture",
+        "review",
+        "boundaries",
+        "layering"
+      ]
     },
     {
       "name": "engineering-paved-path",
       "source": "./plugins/engineering-paved-path",
       "description": "Paved-path best-practice skills: React, Next.js, Fastify, Drizzle, PostgreSQL, Zod, React Testing Library, security, TypeScript, onion architecture, Mermaid.",
       "version": "1.0.0",
-      "keywords": ["best-practices", "react", "nextjs", "fastify", "drizzle", "postgres", "zod", "security", "typescript", "testing", "architecture", "mermaid"]
+      "keywords": [
+        "best-practices",
+        "react",
+        "nextjs",
+        "fastify",
+        "drizzle",
+        "postgres",
+        "zod",
+        "security",
+        "typescript",
+        "testing",
+        "architecture",
+        "mermaid"
+      ]
     }
   ]
 }
