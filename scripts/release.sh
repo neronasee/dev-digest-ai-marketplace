@@ -29,11 +29,18 @@ git fetch origin main --quiet
 [[ "$(git rev-parse HEAD)" == "$(git rev-parse origin/main)" ]] || die "main is not up to date with origin/main"
 
 CURRENT="$(node -e "console.log(require('$MANIFEST').version || '0.0.0')")"
-node -e "
-  const a = '$CURRENT'.split('.').map(Number), b = '$VERSION'.split('.').map(Number);
-  for (let i = 0; i < 3; i++) { if (b[i] !== a[i]) { process.exit(b[i] > a[i] ? 0 : 1); } }
-  process.exit(1);
-" || die "version '$VERSION' must be strictly greater than current '$CURRENT'"
+TAG="${PLUGIN}--v${VERSION}"
+if [ "$VERSION" = "$CURRENT" ]; then
+  # Initial release of an already-declared version: allowed once, tag must not exist.
+  git rev-parse -q --verify "refs/tags/$TAG" >/dev/null && die "tag '$TAG' already exists (version already released)"
+  echo "==> initial release: manifest already declares $VERSION"
+else
+  node -e "
+    const a = '$CURRENT'.split('.').map(Number), b = '$VERSION'.split('.').map(Number);
+    for (let i = 0; i < 3; i++) { if (b[i] !== a[i]) { process.exit(b[i] > a[i] ? 0 : 1); } }
+    process.exit(1);
+  " || die "version '$VERSION' must be greater than current '$CURRENT'"
+fi
 
 grep -q "^## \[$VERSION\]" "$PLUGIN_DIR/CHANGELOG.md" || die "CHANGELOG.md has no '## [$VERSION]' section"
 
@@ -43,24 +50,26 @@ claude plugin validate "$ROOT" >/dev/null
 claude plugin validate "$PLUGIN_DIR" >/dev/null
 
 # --- bump (manifest + marketplace entry, lockstep) ----------------------------
-echo "==> bumping $PLUGIN: $CURRENT -> $VERSION"
-node -e "
-  const fs = require('fs');
-  const bump = (file, mutate) => { const j = JSON.parse(fs.readFileSync(file, 'utf8')); mutate(j); fs.writeFileSync(file, JSON.stringify(j, null, 2) + '\n'); };
-  bump('$MANIFEST', j => { j.version = '$VERSION'; });
-  bump('$MARKETPLACE', j => {
-    const e = (j.plugins || []).find(p => p.name === '$PLUGIN');
-    if (!e) { console.error('no marketplace entry for $PLUGIN'); process.exit(1); }
-    e.version = '$VERSION';
-  });
-"
-
-# --- commit + push --------------------------------------------------------------
-git add "$MANIFEST" "$MARKETPLACE"
-git commit -q -m "chore(release): $PLUGIN v$VERSION
+if [ "$VERSION" != "$CURRENT" ]; then
+  echo "==> bumping $PLUGIN: $CURRENT -> $VERSION"
+  node -e "
+    const fs = require('fs');
+    const bump = (file, mutate) => { const j = JSON.parse(fs.readFileSync(file, 'utf8')); mutate(j); fs.writeFileSync(file, JSON.stringify(j, null, 2) + '\n'); };
+    bump('$MANIFEST', j => { j.version = '$VERSION'; });
+    bump('$MARKETPLACE', j => {
+      const e = (j.plugins || []).find(p => p.name === '$PLUGIN');
+      if (!e) { console.error('no marketplace entry for $PLUGIN'); process.exit(1); }
+      e.version = '$VERSION';
+    });
+  "
+  git add "$MANIFEST" "$MARKETPLACE"
+  git commit -q -m "chore(release): $PLUGIN v$VERSION
 
 Co-Authored-By: Claude Code <noreply@anthropic.com>"
-git push origin main
+  git push origin main
+else
+  echo "==> no version bump needed (manifest already at $VERSION)"
+fi
 
 # --- immutable tag --------------------------------------------------------------
 echo "==> tagging"
